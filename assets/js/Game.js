@@ -104,6 +104,7 @@ var Game = {
     board : {},
     players : {},
     bag : [],
+    deneme: function(){console.log(bag)},
 };
 
 //--Create Game--
