@@ -1,0 +1,43 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+tr, td{
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgb(255, 255, 255);
+}
+
+.f{
+  margin: 10px;
+}
+.stone{
+  width: 47px; height: 47px; border: 1px solid green;
+
+}
+.stone[draggable="true"]{
+  cursor: all-scroll;
+}
+
+.TW{
+  background-color: rgb(226, 37, 37)
+}
+.DW{
+  background-color: rgb(226, 213, 37)
+}
+.TL{
+  background-color: rgb(37, 220, 226)
+}
+.DL{
+  background-color: rgb(37, 182, 226)
+}
+.startSquare{
+  background-color: rgb(226, 177, 43);
+}
+
+#currentPlayerName{
+  width: 300px;
+}
