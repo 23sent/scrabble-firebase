@@ -13,8 +13,9 @@ $(document).ready(function(){
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
    
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
+    firebase.auth().onAuthStateChanged(function(user){
+        if (user){
+            console.log("Giriş yapıldı.")
             var currentGame = new Game(["buadalinmadi","deneme"]);
             createScoreBoard(currentGame.players);
 
@@ -29,7 +30,7 @@ $(document).ready(function(){
                 players = snapshot.val().split(" ");
             });
 
-
+            //LogOut sorunlu. Kontrol et.
             $("#logOut").click(function(){
                 firebase.auth().signOut().then(function(){
                     window.location = "login.html"
