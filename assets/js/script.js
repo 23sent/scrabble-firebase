@@ -99,6 +99,17 @@ $(document).ready(function(){
   
         } else {
           alert("Giriş yapılmadı.")
+          var currentGame = new Game(["Oyuncu 1","Oyuncu 2"]);
+          currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+            createScoreBoard(currentGame.players);
+            currentGame.updateGame(currentPlayer);
+
+            $("#makeMove").click(function(){
+                console.log(currentPlayer);
+                currentGame.makeMove(currentMove,currentPlayer);
+                currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+                currentGame.updateGame(currentPlayer);
+            });
         }
       });
    
