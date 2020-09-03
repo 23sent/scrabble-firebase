@@ -175,7 +175,6 @@ class Game {
 
     getHorizontalWord(row, col) {
         let squaresInRow = Object.keys(this.board).filter(square => square.substring(0, 2) == row);
-        //squaresInRow = squaresInRow.concat(window.currentMove.filter(square => square.substring(0,2) == row));
         let allWords = [];
         let currentWords = [];
         for (let checkCol = 1; checkCol <= 15; checkCol++) {
@@ -192,7 +191,6 @@ class Game {
 
     getVerticalWord(row, col) {
         let squaresInCol = Object.keys(this.board).filter(square => square.substring(2, 4) == col);
-        //squaresInCol = squaresInCol.concat(window.currentMove.filter(square => square.substring(2,4) == col));
         let allWords = [];
         let currentWords = [];
         for (let checkRow = 1; checkRow <= 15; checkRow++) {
@@ -304,13 +302,13 @@ function createBag(){
 
 //---man DOM--
 function disableDraggable(square){
-    $("#"+square).children().attr("draggable","false");
+    $("#"+square).children().attr("data-fixed","true");
 };
 
 //----Create DOM--------
 function createPiece(char, isDraggable){
     if(isDraggable){
-        newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\" draggable=\"true\" ondragstart=\"drag(event)\">Char</div>";
+        newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\" data-fixed=\"false\">Char</div>";
     }else{
         newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\">Char</div>";
     }
@@ -335,38 +333,9 @@ function createTable(row,col) {
             string = string+"<tr>";
             for (let c = 1; c <= col; c++) {
                 squareType = specialSquares[r.toString().padStart(2,"0")+c.toString().padStart(2,"0")] || "";
-                string = string+"<td id=\""+r.toString().padStart(2,"0")+c.toString().padStart(2,"0")+"\"  data-type=\""+squareType+"\"class=\"square "+squareType+"\" ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td>";
+                string = string+"<td id=\""+r.toString().padStart(2,"0")+c.toString().padStart(2,"0")+"\"  data-type=\""+squareType+"\"class=\"square "+squareType+"\"></td>";
             }
             string = string+"</tr>";
         }
     return string;
-}
-
-//-------Drag and Drop-----
-
-function allowDrop(ev) {
-    if(ev.target.hasChildNodes()){
-        return false;
-    }
-    ev.preventDefault();
-}
-
-function allowDropTabla(ev) {
-    ev.preventDefault();
-}
-
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    let parent = document.getElementById(data).parentElement.id
-
-    ev.target.appendChild(document.getElementById(data));
-    if(currentMove.indexOf(parent) != -1){currentMove.splice(currentMove.indexOf(parent),1)}
-    if(ev.target.id != "rack"){currentMove.push(ev.target.id);}
-    
-
 }

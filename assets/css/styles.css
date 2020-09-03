@@ -22,6 +22,8 @@ tr, td{
   cursor: all-scroll;
 }
 
+.selected { background-color: #FECA40; }
+.unselected{ background-color: rgb(187, 187, 187);}
 .TW{
   background-color: rgb(226, 37, 37)
 }

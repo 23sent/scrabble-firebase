@@ -1,5 +1,45 @@
 $(document).ready(function(){
+    var selectedPiece = false;
 
+
+    $(document).on("click", ".stone[data-fixed=false]",function(){
+        $(".stone").removeClass("btn-warning");
+        $(".stone").addClass("btn-light");
+        $(this).removeClass("btn-light");
+        $(this).addClass("btn-warning");
+        selectedPiece = this;
+        console.log($(this).attr("id"));
+    });
+
+    $("td").click(function(){
+        if(selectedPiece != false & $(this).children().length == 0){
+            let parent = document.getElementById(selectedPiece.id).parentElement.id
+            $(selectedPiece).appendTo(this);
+            selectedPiece = false;
+            $(".stone").removeClass("btn-warning");
+            $(".stone").addClass("btn-light");
+
+            
+            if(currentMove.indexOf(parent) != -1){currentMove.splice(currentMove.indexOf(parent),1)}
+            currentMove.push(this.id);
+        }
+    });
+
+    $("#rack").click(function(){
+        if(selectedPiece != false){
+            let parent = document.getElementById(selectedPiece.id).parentElement.id
+            $(selectedPiece).appendTo(this);
+            selectedPiece = false;
+            $(".stone").removeClass("btn-warning");
+            $(".stone").addClass("btn-light");
+
+            if(currentMove.indexOf(parent) != -1){currentMove.splice(currentMove.indexOf(parent),1)}
+        }
+    })
+        
+
+
+    
     // Your web app's Firebase configuration
     var firebaseConfig = {
         apiKey: "AIzaSyAk2BZovB00qe9MqKuD4C4j9wkFua8Oz00",
@@ -32,9 +72,7 @@ $(document).ready(function(){
 
             //LogOut sorunlu. Kontrol et.
             $("#logOut").click(function(){
-                firebase.auth().signOut().then(function(){
-                    window.location = "login.html"
-                });
+                firebase.auth().signOut();
             });
 
             $("#makeMove").click(function(){
@@ -65,10 +103,11 @@ $(document).ready(function(){
       });
    
     
-    $("td").click(function(){
+    /*$("td").click(function(){
         console.log(this.id);
-    });
+    });*/
 
+   
     /*
     $("#makeMove").click(function(){
         currentGame.makeMove(currentMove, currentPlayer);
