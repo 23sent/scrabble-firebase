@@ -98,139 +98,200 @@ var letterMultip = {"TL": 3, "DL":2};
 var currentMove = [];
 var stoneId = 0;
 
-function Game(names){
-    let newBag = createBag();
-   
-    this.board = {"0808":"A","0809":"Z","0810":"E"};
-    this.bag = newBag;
-    this.players = {};
-    this.whoseTurn = 0;
+class Game {
+    constructor(names) {
+        let newBag = createBag();
 
-    this.getFromBag = function(n){
-            let pieces = [];
-            let i = 0; 
-            while(i<n & this.bag.length > 0){
-                randomPiece = this.bag[Math.floor(Math.random()*this.bag.length)];
-                pieces.push(randomPiece);
-                this.bag.splice(randomPiece, 1);
-                i++;
+        this.board = {};
+        this.bag = newBag;
+        this.players = {};
+        this.whoseTurn = 0;
+        let newPlayers = {};
+        for (let i = 0; i < names.length; i++) {
+            let player = names[i];
+            let newRack = this.getFromBag(7);
+            newPlayers[player] = { score: 0, que: i, rack: newRack };
+        }
+        this.players = newPlayers;
+    }
+
+    getFromBag(n) {
+        let pieces = [];
+        let i = 0;
+        while (i < n & this.bag.length > 0) {
+            let randomPiece = this.bag[Math.floor(Math.random() * this.bag.length)];
+            pieces.push(randomPiece);
+            this.bag.splice(this.bag.indexOf(randomPiece), 1);
+            i++;
+        }
+        return pieces;
+    };
+
+    setBoard() {
+        for (const target in this.board) {
+            let char = this.board[target];
+            if (!document.getElementById(target).hasChildNodes()) {
+                $("#" + target).append(createPiece(char, false));
             }
-            return pieces;}
+            else {
+                console.log("Already there is piece in " + target);
+            }
+        }
+    };
 
-    this.setBoard = function(){
-                        for (const target in this.board) {
-                            let char = this.board[target];
-                            if(!document.getElementById(target).hasChildNodes()){
-                                $("#"+target).append(createPiece(char, false));
-                            }else{
-                                console.log("Already there is piece in "+target);
-                        }
-                    }}
-    
-    this.setRack = function(currentPlayer){
-                        let tempRack = this.players[currentPlayer].rack
-                        $("#rack").children().remove()
-                        tempRack.forEach(char => $("#rack").append(createPiece(char, true)));
-                    }
+    setRack(currentPlayer) {
+        let tempRack = this.players[currentPlayer].rack;
+        $("#rack").children().remove();
+        tempRack.forEach(char => $("#rack").append(createPiece(char, true)));
+    };
 
-    this.calculateScore = function(squares){
-                            let score = 0;
-                            let multiplier = 1;
-                            console.log(squares.length)
-                            for(let i = 0; i < squares.length; i++){
-                                let square = squares[i];
-                                let squareType = window.specialSquares[square];
-                                let char = this.board[square];
-                                let letterMultiplier = letterMultip[squareType] || 1;
-                                let wordMultiplier = wordMultip[squareType] || 1;
-                        
-                                score = score + originalBag[char][0]*letterMultiplier;
-                                multiplier = multiplier*wordMultiplier;
-                            }
-                            return score*multiplier;
-                        }
+    calculateScore(squares) {
+        let score = 0;
+        let multiplier = 1;
+        for (let i = 0; i < squares.length; i++) {
+            let square = squares[i];
+            let squareType = window.specialSquares[square];
+            let char = this.board[square];
+            let letterMultiplier = letterMultip[squareType] || 1;
+            let wordMultiplier = wordMultip[squareType] || 1;
+
+            score = score + originalBag[char][0] * letterMultiplier;
+            multiplier = multiplier * wordMultiplier;
+        }
+        return score * multiplier;
+    };
+
+    getRowCol(move){
+        let row = new Set();
+        let col = new Set();
+        for(let i = 0; i<move.length; i++){
+                let square = move[i];
+                row.add(square.substring(0,2));
+                col.add(square.substring(2,4));
+        }
     
-    this.getHorizontalWord = function(row,col){
-        let squaresInRow = Object.keys(this.board).filter(square => square.substring(0,2) == row);
+        return [Array.from(row),Array.from(col)];
+    }    
+
+    getHorizontalWord(row, col) {
+        let squaresInRow = Object.keys(this.board).filter(square => square.substring(0, 2) == row);
         //squaresInRow = squaresInRow.concat(window.currentMove.filter(square => square.substring(0,2) == row));
         let allWords = [];
         let currentWords = [];
-        for(let checkCol = 1; checkCol <= 15; checkCol++){
-            if(squaresInRow.includes(row+checkCol.toString().padStart(2,"0"))){
-                currentWords.push(row+checkCol.toString().padStart(2,"0"));
-            }else{
-                if(currentWords.length > 1){allWords.push(currentWords)};
+        for (let checkCol = 1; checkCol <= 15; checkCol++) {
+            if (squaresInRow.includes(row + checkCol.toString().padStart(2, "0"))) {
+                currentWords.push(row + checkCol.toString().padStart(2, "0"));
+            }
+            else {
+                if (currentWords.length > 1) { allWords.push(currentWords); };
                 currentWords = [];
             }
         }
-        return allWords.filter(element => element.includes(row+col))
-    }
-    
-    this.getVerticalWord = function(row,col){
-        let squaresInCol = Object.keys(this.board).filter(square => square.substring(2,4) == col);
+        return allWords.filter(element => element.includes(row + col));
+    };
+
+    getVerticalWord(row, col) {
+        let squaresInCol = Object.keys(this.board).filter(square => square.substring(2, 4) == col);
         //squaresInCol = squaresInCol.concat(window.currentMove.filter(square => square.substring(2,4) == col));
         let allWords = [];
         let currentWords = [];
-        for(let checkRow = 1; checkRow <= 15; checkRow++){
-            if(squaresInCol.includes(checkRow.toString().padStart(2,"0")+col)){
-                currentWords.push(checkRow.toString().padStart(2,"0")+col);
-            }else{
-                if(currentWords.length > 1){allWords.push(currentWords)};
+        for (let checkRow = 1; checkRow <= 15; checkRow++) {
+            if (squaresInCol.includes(checkRow.toString().padStart(2, "0") + col)) {
+                currentWords.push(checkRow.toString().padStart(2, "0") + col);
+            }
+            else {
+                if (currentWords.length > 1) { allWords.push(currentWords); };
                 currentWords = [];
             }
         }
-        return allWords.filter(element => element.includes(row+col))
-    }
+        return allWords.filter(element => element.includes(row + col));
+    };
 
-    this.findWords = function(move){
-        let RowCol = getRowCol(move);
+    findWords(move) {
+        let RowCol = this.getRowCol(move);
         let row = RowCol[0];
-        let col= RowCol[1];
+        let col = RowCol[1];
         let words = [];
 
-        row.forEach(function(r){
-            col.forEach(function(c){
-                let w = this.getHorizontalWord(r,c);
-                if(!words.some(element => JSON.stringify(element) == JSON.stringify(w))){
+        row.forEach(function (r) {
+            col.forEach(function (c) {
+                let w = this.getHorizontalWord(r, c);
+                if (!words.some(element => JSON.stringify(element) == JSON.stringify(w))) {
                     words.push(w);
                 }
 
-                w = this.getVerticalWord(r,c);
-                if(!words.some(element => JSON.stringify(element) == JSON.stringify(w))){
+                w = this.getVerticalWord(r, c);
+                if (!words.some(element => JSON.stringify(element) == JSON.stringify(w))) {
                     words.push(w);
                 }
-            });
-        });
-
+            },this);
+        },this);
         return words;
+    };
+
+    putBoard(square){
+        this.board[square] = $("#"+square).children().attr("data-char");
     }
 
-   
+    updateScoreBoard(){
+        for(const player in this.players){
+            $("#"+player+"-score").text("Score: "+this.players[player].score.toString().padStart(3,"0"));
+        }
+    }
+    isValid(move, currentPlayer){
+        if(this.whoseTurn != this.players[currentPlayer].que){
+            return false
+        }
+        let rowCol = this.getRowCol(move);
+        if(rowCol[0].length != 1 & rowCol[1].length != 1){
+            return false;
+        }
+        return true;
+    }
 
-
-
+    makeMove(move, currentPlayer){
+        if(this.isValid(move, currentPlayer) == false){
+            return false;
+        }
     
-    let newPlayers = {}; 
-    for(let i = 0; i<names.length;i++){
-        let player = names[i];
-        let newRack = this.getFromBag(7); 
-        newPlayers[player] = {score:0, que: i, rack:newRack};
+        move.forEach(element => this.putBoard(element));
+        move.forEach(s => disableDraggable(s));
+    
+        let words = this.findWords(move);
+        let score = 0;
+
+        words.forEach(function(word){
+            score = score+ this.calculateScore(word[0] || []);
+        },this);
+        console.log(score);
+        this.players[currentPlayer].score += score;
+
+        
+        let newRack = this.getFromBag(move.length);
+        let tempRack = $("#rack").children();
+        for(let i = 0; i<tempRack.length; i++){
+            newRack.push(tempRack[i].attributes["data-char"]["value"]);
+        }
+        this.players[currentPlayer].rack = newRack;
+    
+        this.setRack(currentPlayer);
+
+
+        this.updateScoreBoard()
+        window.currentMove = [];
+        this.whoseTurn = (this.whoseTurn+1)%Object.keys(this.players).length
+        return true;
     }
-    this.players = newPlayers;
+
+    updateGame(player){
+        this.updateScoreBoard();
+        this.setBoard();
+        this.setRack(player);
+    }
 }
 
 
-function getRowCol(move){
-    let row = new Set();
-    let col = new Set();
-    for(let i = 0; i<move.length; i++){
-            square = move[i];
-            row.add(square.substring(0,2));
-            col.add(square.substring(2,4));
-    }
 
-    return [Array.from(row),Array.from(col)];
-}    
 
 function createBag(){
     let newBag = [];
@@ -245,6 +306,7 @@ function createBag(){
 function disableDraggable(square){
     $("#"+square).children().attr("draggable","false");
 };
+
 //----Create DOM--------
 function createPiece(char, isDraggable){
     if(isDraggable){
@@ -257,6 +319,14 @@ function createPiece(char, isDraggable){
     newPiece = newPiece.replace("dargID","stone"+stoneId.toString());
     stoneId = stoneId + 1;
     return newPiece;
+}
+
+function createScoreBoard(players){
+    $("#scoreboard").children().remove();
+    let string = "<div id=\"playerName\"class=\"card bg-light\"><div class=\"card-body\"><h6 class=\"card-title\">playerName</h6><p id=\"playerName-score\" class=\"card-text\">Score: 0</p></div></div>";
+    for(const player in players){
+        $("#scoreboard").append(string.replaceAll("playerName",player));
+    }
 }
 
 function createTable(row,col) {
