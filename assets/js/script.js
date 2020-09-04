@@ -1,6 +1,7 @@
+var currentMove = [];
+var stoneId = 0;
 $(document).ready(function(){
     var selectedPiece = false;
-
 
     $(document).on("click", ".stone[data-fixed=false]",function(){
         $(".stone").removeClass("btn-warning");
@@ -55,13 +56,13 @@ $(document).ready(function(){
    
     firebase.auth().onAuthStateChanged(function(user){
         if (user){
-            console.log("Giriş yapıldı.")
+            alert(user.email);
+            var currentPlayer = user.email.split("@")[0];
             var currentGame = new Game(["buadalinmadi","deneme"]);
             createScoreBoard(currentGame.players);
-
-            var currentPlayer = user.email.split("@")[0];
-            var oyuncular = firebase.database().ref("Oyuncular");
             var data = firebase.database().ref("games");
+            
+            var oyuncular = firebase.database().ref("Oyuncular");
 
             let players;
 
@@ -70,13 +71,15 @@ $(document).ready(function(){
                 players = snapshot.val().split(" ");
             });
 
-            //LogOut sorunlu. Kontrol et.
-            $("#logOut").click(function(){
+
+            document.getElementById("logOut").addEventListener("click",function(){
                 firebase.auth().signOut();
+                alert("Çıkış yapıldı.");
             });
 
             $("#makeMove").click(function(){
                 if(currentGame.makeMove(currentMove,currentPlayer)){
+                    alert("Gönderdi.");
                     firebase.database().ref('games/').set(currentGame);
                 }
             });
@@ -94,35 +97,24 @@ $(document).ready(function(){
                 currentGame.updateGame(currentPlayer);
                 console.log(snapshot.val());
                 console.log(currentGame);
-
             });
   
         } else {
-          alert("Giriş yapılmadı.")
-          var currentGame = new Game(["Oyuncu 1","Oyuncu 2"]);
-          currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
-            createScoreBoard(currentGame.players);
-            currentGame.updateGame(currentPlayer);
+            alert("Giriş yapılmadı.")
+            var currentGame = new Game(["Oyuncu 1","Oyuncu 2"]);
 
-            $("#makeMove").click(function(){
-                console.log(currentPlayer);
-                currentGame.makeMove(currentMove,currentPlayer);
-                currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+            currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+                createScoreBoard(currentGame.players);
                 currentGame.updateGame(currentPlayer);
-            });
+
+                $("#makeMove").click(function(){
+                    console.log(currentPlayer);
+                    currentGame.makeMove(currentMove,currentPlayer);
+                    currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+                    currentGame.updateGame(currentPlayer);
+                    alert(currentPlayer);
+                });
         }
       });
-   
     
-    /*$("td").click(function(){
-        console.log(this.id);
-    });*/
-
-   
-    /*
-    $("#makeMove").click(function(){
-        currentGame.makeMove(currentMove, currentPlayer);
-    });*/
-    
-
 });

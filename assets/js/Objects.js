@@ -95,8 +95,7 @@ var specialSquares = {
 var wordMultip = {"TW": 3, "DW":2};
 var letterMultip = {"TL": 3, "DL":2};
 
-var currentMove = [];
-var stoneId = 0;
+
 
 class Game {
     constructor(names) {
@@ -131,7 +130,10 @@ class Game {
         for (const target in this.board) {
             let char = this.board[target];
             if (!document.getElementById(target).hasChildNodes()) {
-                $("#" + target).append(createPiece(char, false));
+                //Replaced jquery with javascript.DOM
+                //$("#" + target).append(createPiece(char, false));
+                let newP = this.createPiece(char, false);
+                document.getElementById(target).insertAdjacentHTML("beforeend", newP);
             }
             else {
                 console.log("Already there is piece in " + target);
@@ -142,7 +144,7 @@ class Game {
     setRack(currentPlayer) {
         let tempRack = this.players[currentPlayer].rack;
         $("#rack").children().remove();
-        tempRack.forEach(char => $("#rack").append(createPiece(char, true)));
+        tempRack.forEach(char => $("#rack").append(this.createPiece(char, true)));
     };
 
     calculateScore(squares) {
@@ -154,7 +156,7 @@ class Game {
             let char = this.board[square];
             let letterMultiplier = letterMultip[squareType] || 1;
             let wordMultiplier = wordMultip[squareType] || 1;
-
+            console.log(char);
             score = score + originalBag[char][0] * letterMultiplier;
             multiplier = multiplier * wordMultiplier;
         }
@@ -233,7 +235,7 @@ class Game {
 
     updateScoreBoard(){
         for(const player in this.players){
-            $("#"+player+"-score").text("Score: "+this.players[player].score.toString().padStart(3,"0"));
+            document.getElementById(player+"-score").textContent = "Score: "+this.players[player].score.toString().padStart(3,"0");
         }
     }
     isValid(move, currentPlayer){
@@ -286,9 +288,22 @@ class Game {
         this.setBoard();
         this.setRack(player);
     }
+
+    createPiece(char, isDraggable){
+        var newPiece;
+        if(isDraggable){
+            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\" data-fixed=\"false\">Char</div>";
+        }else{
+            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\">Char</div>";
+        }
+    
+        newPiece = newPiece.replace(new RegExp("Char","g"),char);
+        newPiece = newPiece.replace("dargID","stone"+stoneId.toString());
+        stoneId = stoneId + 1;
+        return newPiece;
+    }
+    
 }
-
-
 
 
 function createBag(){
@@ -306,24 +321,12 @@ function disableDraggable(square){
 };
 
 //----Create DOM--------
-function createPiece(char, isDraggable){
-    if(isDraggable){
-        newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\" data-fixed=\"false\">Char</div>";
-    }else{
-        newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\">Char</div>";
-    }
-
-    newPiece = newPiece.replaceAll("Char",char);
-    newPiece = newPiece.replace("dargID","stone"+stoneId.toString());
-    stoneId = stoneId + 1;
-    return newPiece;
-}
 
 function createScoreBoard(players){
     $("#scoreboard").children().remove();
     let string = "<div id=\"playerName\"class=\"card bg-light\"><div class=\"card-body\"><h6 class=\"card-title\">playerName</h6><p id=\"playerName-score\" class=\"card-text\">Score: 0</p></div></div>";
     for(const player in players){
-        $("#scoreboard").append(string.replaceAll("playerName",player));
+        document.getElementById("scoreboard").insertAdjacentHTML("beforeend",string.replace(new RegExp("playerName","g"),player))
     }
 }
 
