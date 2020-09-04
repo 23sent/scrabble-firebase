@@ -9,7 +9,6 @@ $(document).ready(function(){
         $(this).removeClass("btn-light");
         $(this).addClass("btn-warning");
         selectedPiece = this;
-        console.log($(this).attr("id"));
     });
 
     $("td").click(function(){
@@ -56,7 +55,6 @@ $(document).ready(function(){
    
     firebase.auth().onAuthStateChanged(function(user){
         if (user){
-            alert(user.email);
             var currentPlayer = user.email.split("@")[0];
             var currentGame = new Game(["buadalinmadi","deneme"]);
             createScoreBoard(currentGame.players);

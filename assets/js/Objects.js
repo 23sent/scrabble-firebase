@@ -92,6 +92,8 @@ var specialSquares = {
     "0808":"DW",
 };
 
+var specialSquaresOriginal = specialSquares;
+
 var wordMultip = {"TW": 3, "DW":2};
 var letterMultip = {"TL": 3, "DL":2};
 
@@ -136,7 +138,7 @@ class Game {
                 document.getElementById(target).insertAdjacentHTML("beforeend", newP);
             }
             else {
-                console.log("Already there is piece in " + target);
+                //console.log("Already there is piece in " + target);
             }
         }
     };
@@ -150,16 +152,19 @@ class Game {
     calculateScore(squares) {
         let score = 0;
         let multiplier = 1;
+        let word = "";
         for (let i = 0; i < squares.length; i++) {
             let square = squares[i];
             let squareType = window.specialSquares[square];
             let char = this.board[square];
             let letterMultiplier = letterMultip[squareType] || 1;
             let wordMultiplier = wordMultip[squareType] || 1;
-            console.log(char);
             score = score + originalBag[char][0] * letterMultiplier;
             multiplier = multiplier * wordMultiplier;
+            delete specialSquares[square];
+            word = word+" "+char;
         }
+
         return score * multiplier;
     };
 
@@ -171,7 +176,7 @@ class Game {
                 row.add(square.substring(0,2));
                 col.add(square.substring(2,4));
         }
-    
+
         return [Array.from(row),Array.from(col)];
     }    
 
@@ -179,7 +184,7 @@ class Game {
         let squaresInRow = Object.keys(this.board).filter(square => square.substring(0, 2) == row);
         let allWords = [];
         let currentWords = [];
-        for (let checkCol = 1; checkCol <= 15; checkCol++) {
+        for (let checkCol = 1; checkCol < 16; checkCol++) {
             if (squaresInRow.includes(row + checkCol.toString().padStart(2, "0"))) {
                 currentWords.push(row + checkCol.toString().padStart(2, "0"));
             }
@@ -188,14 +193,16 @@ class Game {
                 currentWords = [];
             }
         }
-        return allWords.filter(element => element.includes(row + col));
+        if (currentWords.length > 1) { allWords.push(currentWords); };
+        let ret = allWords.filter(element => element.includes(row + col));
+        return ret;
     };
 
     getVerticalWord(row, col) {
         let squaresInCol = Object.keys(this.board).filter(square => square.substring(2, 4) == col);
         let allWords = [];
         let currentWords = [];
-        for (let checkRow = 1; checkRow <= 15; checkRow++) {
+        for (let checkRow = 1; checkRow < 16; checkRow++) {
             if (squaresInCol.includes(checkRow.toString().padStart(2, "0") + col)) {
                 currentWords.push(checkRow.toString().padStart(2, "0") + col);
             }
@@ -204,6 +211,7 @@ class Game {
                 currentWords = [];
             }
         }
+        if (currentWords.length > 1) { allWords.push(currentWords); };
         return allWords.filter(element => element.includes(row + col));
     };
 
@@ -216,6 +224,7 @@ class Game {
         row.forEach(function (r) {
             col.forEach(function (c) {
                 let w = this.getHorizontalWord(r, c);
+
                 if (!words.some(element => JSON.stringify(element) == JSON.stringify(w))) {
                     words.push(w);
                 }
@@ -259,11 +268,14 @@ class Game {
     
         let words = this.findWords(move);
         let score = 0;
-
+        
         words.forEach(function(word){
-            score = score+ this.calculateScore(word[0] || []);
+            if(word.length > 0){
+                score = score+ this.calculateScore(word[0]);
+            }
+        
         },this);
-        console.log(score);
+
         this.players[currentPlayer].score += score;
 
         
@@ -335,7 +347,7 @@ function createTable(row,col) {
         for(let r = 1; r<=row; r++){
             string = string+"<tr>";
             for (let c = 1; c <= col; c++) {
-                squareType = specialSquares[r.toString().padStart(2,"0")+c.toString().padStart(2,"0")] || "";
+                squareType = specialSquaresOriginal[r.toString().padStart(2,"0")+c.toString().padStart(2,"0")] || "";
                 string = string+"<td id=\""+r.toString().padStart(2,"0")+c.toString().padStart(2,"0")+"\"  data-type=\""+squareType+"\"class=\"square "+squareType+"\"></td>";
             }
             string = string+"</tr>";
