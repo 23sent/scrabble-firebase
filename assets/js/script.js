@@ -1,5 +1,7 @@
 var currentMove = [];
 var stoneId = 0;
+document.documentElement.style.setProperty("--square-size",  ((document.getElementById("frame").clientWidth/15)+"px"));
+
 $(document).ready(function(){
     var selectedPiece = false;
 
@@ -50,16 +52,15 @@ $(document).ready(function(){
         messagingSenderId: "674947027180",
         appId: "1:674947027180:web:186307da54eefa9b23d5c9"
     };
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
    
     firebase.auth().onAuthStateChanged(function(user){
         if (user){
             var currentPlayer = user.email.split("@")[0];
-            var currentGame = new Game(["buadalinmadi","deneme"]);
-            createScoreBoard(currentGame.players);
+            var currentGame = new Game([]);
             var data = firebase.database().ref("games");
-            
             var oyuncular = firebase.database().ref("Oyuncular");
 
             let players;
@@ -68,7 +69,16 @@ $(document).ready(function(){
                 console.log(snapshot.val().split(" "));
                 players = snapshot.val().split(" ");
             });
-
+  
+            data.on('value', function(snapshot){
+                currentGame.bag = snapshot.val().bag;
+                currentGame.players = snapshot.val().players;
+                currentGame.whoseTurn = snapshot.val().whoseTurn;
+                currentGame.board = snapshot.val()["board"] || {};
+                currentGame.updateGame(currentPlayer);
+                console.log(snapshot.val());
+                console.log(currentGame);
+            });
 
             document.getElementById("logOut").addEventListener("click",function(){
                 firebase.auth().signOut();
@@ -83,18 +93,8 @@ $(document).ready(function(){
             });
   
             $("#reset").click(function(){
-                currentGame = new Game(["buadalinmadi","deneme"]);
+                currentGame = new Game(players);
                 firebase.database().ref('games/').set(currentGame);
-            });
-  
-            data.on('value', function(snapshot){
-                currentGame.bag = snapshot.val().bag;
-                currentGame.players = snapshot.val().players;
-                currentGame.whoseTurn = snapshot.val().whoseTurn;
-                currentGame.board = snapshot.val()["board"] || {};
-                currentGame.updateGame(currentPlayer);
-                console.log(snapshot.val());
-                console.log(currentGame);
             });
   
         } else {
@@ -110,7 +110,6 @@ $(document).ready(function(){
                     currentGame.makeMove(currentMove,currentPlayer);
                     currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
                     currentGame.updateGame(currentPlayer);
-                    alert(currentPlayer);
                 });
         }
       });

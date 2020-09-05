@@ -1,29 +1,104 @@
-html, body {
+:root{
+  --square-size: 50px;
+}
+
+html, body{
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
+table{
+  width: 100%; 
+  height: 100%;
+  border: 1px solid rgb(250, 250, 250);
+}
+
+header{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.board{
+  border: 1px solid rgb(247, 87, 87);
+  width: calc(var(--square-size) * 15 + 1px);
+  height: calc(var(--square-size) * 15 + 1px);
+}
+
 tr, td{
-  width: 50px;
-  height: 50px;
+  width: var(--square-size);
+  height: var(--square-size);
   border: 1px solid rgb(255, 255, 255);
+}
+
+
+#frame{
+  margin: auto;
+  padding-top:15px;
+  padding-bottom:15px;
+  width: 100%;
+  max-width: 750px;
 }
 
 .f{
   margin: 10px;
+  display: inline-block;
 }
+
 .stone{
-  width: 47px; height: 47px; border: 1px solid green;
+  width: calc(var(--square-size) - calc(var(--square-size) / 16)); 
+  height: calc(var(--square-size) -  calc(var(--square-size) / 16));
+  padding: 0 0;
+  margin: 0 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid green;
+}
+.stone[data-fixed=true]{
+  background-color: rgb(226, 220, 220)
+}
+
+#scoreboard{
+  position: static;
+  display: inline-block;
+}
+.sboard{
+  display: inline-block;
+  border: 1px solid var(--danger);
+  background-color: var(--light);
+  margin: 3px 3px;
+  padding: 3px 5px;
+  border-radius: 10px;
+}
+
+.sboar-body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
 }
-.stone[draggable="true"]{
-  cursor: all-scroll;
+.sboard-title{
+  text-align: center;
+  color: var(--black);
+}
+.sboard-text{
+  text-align: center;
+  margin: 0px 0px;
+  color: var(--black);
 }
 
-.selected { background-color: #FECA40; }
-.unselected{ background-color: rgb(187, 187, 187);}
+#rack{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  height: var(--square-size);
+  width: calc(var(--square-size) * 8);
+}
+
+
 .TW{
   background-color: rgb(226, 37, 37)
 }
@@ -36,10 +111,7 @@ tr, td{
 .DL{
   background-color: rgb(37, 182, 226)
 }
+
 .startSquare{
   background-color: rgb(226, 177, 43);
-}
-
-#currentPlayerName{
-  width: 300px;
 }

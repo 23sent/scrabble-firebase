@@ -243,10 +243,18 @@ class Game {
     }
 
     updateScoreBoard(){
+        createScoreBoard(this.players);
         for(const player in this.players){
+            //document.getElementById(player+"-score").classList.add("");
             document.getElementById(player+"-score").textContent = "Score: "+this.players[player].score.toString().padStart(3,"0");
+            if(this.whoseTurn == this.players[player].que){
+                document.getElementById(player).style.backgroundColor = "rgb(0, 0, 0)";
+                document.getElementById(player).style.color = "var(--light)";
+
+            }
         }
     }
+
     isValid(move, currentPlayer){
         if(this.whoseTurn != this.players[currentPlayer].que){
             return false
@@ -304,9 +312,9 @@ class Game {
     createPiece(char, isDraggable){
         var newPiece;
         if(isDraggable){
-            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\" data-fixed=\"false\">Char</div>";
+            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\" data-fixed=\"false\">Char</div>";
         }else{
-            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"stone btn btn-light\">Char</div>";
+            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\">Char</div>";
         }
     
         newPiece = newPiece.replace(new RegExp("Char","g"),char);
@@ -336,7 +344,7 @@ function disableDraggable(square){
 
 function createScoreBoard(players){
     $("#scoreboard").children().remove();
-    let string = "<div id=\"playerName\"class=\"card bg-light\"><div class=\"card-body\"><h6 class=\"card-title\">playerName</h6><p id=\"playerName-score\" class=\"card-text\">Score: 0</p></div></div>";
+    let string = "<div id=\"playerName\"class=\"sboard\"><div class=\"sboard-body\"><h6 class=\"sboard-title\">playerName</h6><p id=\"playerName-score\" class=\"sboard-text\">Score: 0</p></div></div>";
     for(const player in players){
         document.getElementById("scoreboard").insertAdjacentHTML("beforeend",string.replace(new RegExp("playerName","g"),player))
     }
