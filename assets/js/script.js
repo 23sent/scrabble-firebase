@@ -1,9 +1,9 @@
 var currentMove = [];
 var stoneId = 0;
-document.documentElement.style.setProperty("--square-size",  ((document.getElementById("frame").clientWidth/15)+"px"));
+//document.documentElement.style.setProperty("--square-size",  ((document.getElementById("frame").clientWidth/15)+"px"));
 
 $(document).ready(function(){
-    var selectedPiece = false;
+    var selectedPiece = false;   
 
     $(document).on("click", ".stone[data-fixed=false]",function(){
         $(".stone").removeClass("btn-warning");
@@ -93,11 +93,28 @@ $(document).ready(function(){
             });
   
             $("#reset").click(function(){
-                currentGame = new Game(players);
-                firebase.database().ref('games/').set(currentGame);
+                if (confirm("Var olan oyun kaydedilmeyecek!")) {
+                    currentGame = new Game(players);
+                    firebase.database().ref('games/').set(currentGame);
+                    window.location.href = "index.html";
+                  }
             });
+
+            //Chat
+            var chat = new FirebaseChat("chatBox", "chatBoxButton", firebase.database().ref("messages/"), currentPlayer);
+            chat.chatBox.getElementsByClassName("chat-close")[0].onclick = function(){
+                document.getElementById("chatBox").style.display = "none"
+            }; 
+            chat.chatButton.onclick = function(){
+                document.getElementById("chatBox").style.display = "block";
+                document.getElementById("chatBoxButton").classList.remove("btn-danger");
+                document.getElementById("chatBoxButton").classList.add("btn-secondary");
+            };
+
+            chat.chatBox.getElementsByTagName("button")[0].onclick = function(){chat.sendMessages()};
   
         } else {
+            document.getElementById("chatBoxButton").style.display = "none";
             alert("Giriş yapılmadı.")
             var currentGame = new Game(["Oyuncu 1","Oyuncu 2"]);
 
