@@ -22,7 +22,6 @@ header{
 }
 
 .board{
-  border: 1px solid rgb(247, 87, 87);
   width: calc(var(--square-size) * 15 + 1px);
   height: calc(var(--square-size) * 15 + 1px);
 }
@@ -38,7 +37,7 @@ tr, td{
   margin: auto;
   padding-top:15px;
   padding-bottom:15px;
-  width: 100%;
+  width: calc(var(--square-size) * 15 + 1px);
   max-width: 750px;
 }
 
@@ -56,6 +55,7 @@ tr, td{
   justify-content: center;
   align-items: center;
   border: 1px solid green;
+  font-size: calc(var(--square-size) / 2);
 }
 .stone[data-fixed=true]{
   background-color: rgb(226, 220, 220)
