@@ -124,9 +124,10 @@ $(document).ready(function(){
 
                 $("#makeMove").click(function(){
                     console.log(currentPlayer);
-                    currentGame.makeMove(currentMove,currentPlayer);
-                    currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
-                    currentGame.updateGame(currentPlayer);
+                    if(currentGame.makeMove(currentMove,currentPlayer)){
+                        currentPlayer = ["Oyuncu 1","Oyuncu 2"][currentGame.whoseTurn];
+                        currentGame.updateGame(currentPlayer);
+                    }   
                 });
         }
       });

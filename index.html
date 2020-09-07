@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html> 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
         <script src="assets/js/variables.js"></script>
         <script src="assets/js/Objects.js"></script>
     </head>
-    <body >
+    <body>
         <div id="frame">
             <header style="border: 1px solid orange">
                 <div class="btn-group" role="group">
@@ -18,7 +18,7 @@
                 </div>
                 <div class="btn-group" role="group">
                     <button id="makeMove" type="submit" class=" btn btn-success f" >Hamle yap</button>
-                    <button id="chatBoxButton" class="btn btn-secondary f" style="color: rgb(255,255,255)">&#9776</button>
+                    <button id="chatBoxButton" class="btn btn-secondary f">Chat</button>
                 </div>
                 <div id="scoreboard" ><!--Scoreboard in there--></div>
             </header>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="chat-send">
                             <input id="mesajInput">
-                            <button class="btn btn-secondary"><span>>>></span></button>
+                            <button type="submit" class="btn btn-secondary"><span style="font-size: 27px">>>></span></button>
                     </div>
                 </div>
             </div>
@@ -48,6 +48,10 @@
                 </div>
            
             <div style="margin-top: 15px; border: 1px solid red">
+                <!--<svg id="st" data-fixed="false" data-char="A" class="stone" height="50" width="50">
+                    <text x="5%" y="40%" fill="black">A</text>
+                    <text x="70%" y="95%" fill="black">1</text>
+                  </svg>--> 
                 <div id="rack" style="border: 1px solid purple"></div>
             </div>
 

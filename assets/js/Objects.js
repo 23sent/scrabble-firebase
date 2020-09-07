@@ -270,6 +270,9 @@ class Game {
         if(this.isValid(move, currentPlayer) == false){
             return false;
         }
+        if(this.isGameEnded()){
+            return false;
+        }
     
         move.forEach(element => this.putBoard(element));
         move.forEach(s => disableDraggable(s));
@@ -304,21 +307,45 @@ class Game {
     }
 
     updateGame(player){
+        if(this.isGameEnded()){
+            this.whoWin();
+        };
         this.updateScoreBoard();
         this.setBoard();
         this.setRack(player);
     }
 
+    isGameEnded(){
+        for(const name in this.players){
+            if(this.players[name].rack == 0){
+                return true
+            }
+        }
+        return false
+    }
+
+    whoWin(){
+        for(const name in this.players){
+            let negativeScore = 0;
+            this.players[name].rack.forEach(element => negativeScore += originalBag[element][0])
+            this.players[name].score = this.players[name].score - negativeScore;
+        }
+        alert("Oyun Bitti.")
+    }
+
     createPiece(char, isDraggable){
         var newPiece;
         if(isDraggable){
-            newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\" data-fixed=\"false\">Char</div>";
+            //newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\" data-fixed=\"false\">Char</div>";
+            newPiece = "<svg id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\" data-fixed=\"false\" height=\"50\" width=\"50\"><text x=\"5%\" y=\"43%\" fill=\"black\">Char</text><text x=\"70%\" y=\"95%\" fill=\"black\">Value</text></svg>"
         }else{
             newPiece = "<div id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\">Char</div>";
+            newPiece = "<svg id=\"dargID\" data-char=\"Char\" class=\"btn btn-light stone\" data-fixed=\"true\" height=\"50\" width=\"50\"><text x=\"5%\" y=\"43%\" fill=\"black\">Char</text><text x=\"70%\" y=\"95%\" fill=\"black\">Value</text></svg>";
         }
     
         newPiece = newPiece.replace(new RegExp("Char","g"),char);
         newPiece = newPiece.replace("dargID","stone"+stoneId.toString());
+        newPiece = newPiece.replace("Value", originalBag[char][0]);
         stoneId = stoneId + 1;
         return newPiece;
     }
