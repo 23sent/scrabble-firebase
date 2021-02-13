@@ -1,3 +1,4 @@
+//simple chat works with firbase api
 class FirebaseChat{
     constructor(chatBoxId, chatButtonId, fireBase, username){
         this.chatBox = document.getElementById(chatBoxId);

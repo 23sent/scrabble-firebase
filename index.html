@@ -6,24 +6,22 @@
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="assets/css/styles.css">
         <link rel="stylesheet" href="assets/css/chat.css">
-        <script src="assets/js/variables.js"></script>
-        <script src="assets/js/Objects.js"></script>
     </head>
     <body>
         <div id="frame">
             <header style="border: 1px solid orange">
-                <div class="btn-group" role="group">
+                <!--<div class="btn-group" role="group">
                     <button id="logOut" class=" btn btn-warning f">Çıkış Yap</button>
                     <button id="reset" class=" btn btn-danger f" >Yeni Oyun</button>
-                </div>
+                </div>-->
                 <div class="btn-group" role="group">
                     <button id="makeMove" type="submit" class=" btn btn-success f" >Hamle yap</button>
-                    <button id="chatBoxButton" class="btn btn-secondary f">Chat</button>
+                    <!--<button id="chatBoxButton" class="btn btn-secondary f">Chat</button>-->
                 </div>
                 <div id="scoreboard" ><!--Scoreboard in there--></div>
             </header>
          
-            <div id="chatBox" class="chat-modal">
+            <!--<div id="chatBox" class="chat-modal">
                 <div class="chat">
                     <div class="chat-header">
                         <span class="chat-close">&times;</span>
@@ -36,15 +34,10 @@
                             <button type="submit" class="btn btn-secondary"><span style="font-size: 27px">>>></span></button>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
                 <div class="board">
-                    <table class="bg-success" >
-                        <script>
-                            document.write(createTable(15,15));
-                            document.getElementById("0808").classList.add("startSquare");
-                        </script>
-                    </table>
+                    <table class="bg-success" ></table>
                 </div>
            
             <div style="margin-top: 15px; border: 1px solid red">
@@ -57,13 +50,12 @@
 
         </div>
         
-        <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 
-        <script src="assets/js/Chat.js"></script>
+        <script src="assets/js/variables.js"></script>
+        <script src="assets/js/Scrabble.js"></script>
+        <!--script src="assets/js/Chat.js"></script>-->
         <script src="assets/js/script.js"></script>
     </body>
 </html>
